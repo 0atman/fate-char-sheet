@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask, render_template
-from flask.ext import admin
+from flask.ext.admin import Admin, AdminIndexView, expose
 from flask.ext.admin.contrib.mongoengine import ModelView
 from flask.ext.mongoengine import MongoEngine
 from mongoengine import connect
@@ -46,12 +46,32 @@ api = Api(app)
 api.add_resource(CharacterResource, '/character/<string:name>')
 
 
+class ReadOnlyView(ModelView):
+    # Disable model creation
+    name = "ro_view"
+    can_edit = False
+    can_create = False
+    can_delete = False
+
+
+class FateIndexView(AdminIndexView):
+    @expose('/')
+    def index(self):
+        return 1
+
+
 if __name__ == '__main__':
     # Create admin
-    admin = admin.Admin(app, 'Fate Accelerated')
-
+    admin = Admin(
+        app,
+        'Fate Accelerated',
+        index_view=AdminIndexView()
+    )
     # Add views
     admin.add_view(ModelView(Character))
+    admin.add_view(
+        ReadOnlyView(Character, endpoint="view", name="View"),
+    )
 
     # Bind to PORT if defined, otherwise default to 5000.
     port = int(os.environ.get('PORT', 5000))
