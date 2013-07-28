@@ -1,7 +1,8 @@
 import os
+from uuid import uuid4
 
 from flask import Flask, render_template
-from flask.ext.admin import Admin, AdminIndexView, expose
+from flask.ext.admin import Admin
 from flask.ext.admin.contrib.mongoengine import ModelView
 from flask.ext.mongoengine import MongoEngine
 from mongoengine import connect
@@ -12,23 +13,17 @@ from models import Character
 # Create application
 app = Flask(__name__)
 
-# Create dummy secrey key so we can use sessions
-app.config['SECRET_KEY'] = '123456790'
+# Create secret key so we can use sessions
+app.config['SECRET_KEY'] = uuid4()
 app.config['MONGODB_SETTINGS'] = {'DB': 'testing'}
 
 # Create models
-connect(
-    'flask-basic',
-    host=os.environ.get(
-        'MONGOLAB_URI',
-        'mongodb://localhost/flask-basic'
-    )
-)
-db = MongoEngine()
-db.init_app(app)
+ml_uri = os.environ.get('MONGOLAB_URI', None)
+connect(__name__, ml_uri) if ml_uri else connect(__name__)
+
+MongoEngine().init_app(app)
 
 
-# Flask views
 @app.route('/')
 def index():
     return render_template('index.html', character="test")
@@ -53,27 +48,15 @@ class ReadOnlyView(ModelView):
     can_create = False
     can_delete = False
 
-
-class FateIndexView(AdminIndexView):
-    @expose('/')
-    def index(self):
-        return 1
-
+admin = Admin(app, 'Fate Accelerated')
+admin.add_view(
+    ModelView(Character)
+)
+admin.add_view(
+    ReadOnlyView(Character, endpoint="view", name="View"),
+)
 
 if __name__ == '__main__':
-    # Create admin
-    admin = Admin(
-        app,
-        'Fate Accelerated',
-        index_view=AdminIndexView()
-    )
-    # Add views
-    admin.add_view(ModelView(Character))
-    admin.add_view(
-        ReadOnlyView(Character, endpoint="view", name="View"),
-    )
-
-    # Bind to PORT if defined, otherwise default to 5000.
     port = int(os.environ.get('PORT', 5000))
     app.debug = True
     app.run(host='0.0.0.0', port=port)

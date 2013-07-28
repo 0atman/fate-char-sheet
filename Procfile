@@ -1,1 +1,1 @@
-web: python flask-basic.py
+web: python fate-char-sheet.py
