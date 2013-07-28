@@ -18,7 +18,7 @@ app.config['SECRET_KEY'] = uuid4()
 app.config['MONGODB_SETTINGS'] = {'DB': 'testing'}
 
 # Create models
-ml_uri = os.environ.get('MONGOLAB_URI', None)
+ml_uri = os.environ.get('MONGOLAB_URI')
 connect(__name__, ml_uri) if ml_uri else connect(__name__)
 
 MongoEngine().init_app(app)
