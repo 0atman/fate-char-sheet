@@ -19,7 +19,7 @@ app.config['MONGODB_SETTINGS'] = {'DB': 'testing'}
 
 # Create models
 ml_uri = os.environ.get('MONGOLAB_URI')
-connect(__name__, ml_uri) if ml_uri else connect(__name__)
+connect(__name__, ml_uri)
 
 MongoEngine().init_app(app)
 
