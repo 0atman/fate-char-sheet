@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 from flask.ext.admin import Admin
 from flask.ext.admin.contrib.mongoengine import ModelView
 from flask.ext.mongoengine import MongoEngine
@@ -30,7 +30,7 @@ db.init_app(app)
 
 @app.route('/')
 def index():
-    return render_template('index.html', character="test")
+    return redirect("/admin/")
 
 
 class CharacterResource(Resource):
@@ -54,7 +54,7 @@ class ReadOnlyView(ModelView):
 
 admin = Admin(app, 'Fate Accelerated')
 admin.add_view(
-    ModelView(Character)
+    ModelView(Character, endpoint="edit", name="Edit")
 )
 admin.add_view(
     ReadOnlyView(Character, endpoint="view", name="View"),
