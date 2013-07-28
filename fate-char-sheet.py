@@ -1,5 +1,4 @@
 import os
-from uuid import uuid4
 
 from flask import Flask, render_template
 from flask.ext.admin import Admin
@@ -18,10 +17,15 @@ app.config['SECRET_KEY'] = "dd76525c-f7c6-11e2-8440-5b0a54959281"
 app.config['MONGODB_SETTINGS'] = {'DB': 'testing'}
 
 # Create models
-ml_uri = os.environ.get('MONGOLAB_URI')
-connect(__name__, ml_uri)
-
-db = MongoEngine(app)
+connect(
+    'fate-char-sheet',
+    host=os.environ.get(
+        'MONGOLAB_URI',
+        'mongodb://localhost/fate-char-sheet'
+    )
+)
+db = MongoEngine()
+db.init_app(app)
 
 
 @app.route('/')
