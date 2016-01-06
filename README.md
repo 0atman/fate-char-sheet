@@ -1,4 +1,4 @@
-```
+```yaml
 http localhost:5000/character/Disaster
 HTTP/1.0 200 OK
 Content-Length: 259
