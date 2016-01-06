@@ -1,10 +1,13 @@
+```
 http localhost:5000/character/Disaster
 HTTP/1.0 200 OK
 Content-Length: 259
 Content-Type: application/json
 Date: Fri, 26 Jul 2013 12:43:00 GMT
 Server: Werkzeug/0.8.3 Python/2.7.4
+```
 
+```javascript
 {
     "aspects": [], 
     "careful": 0, 
@@ -19,3 +22,4 @@ Server: Werkzeug/0.8.3 Python/2.7.4
     "stunts": [], 
     "trouble": "Lots"
 }
+```
